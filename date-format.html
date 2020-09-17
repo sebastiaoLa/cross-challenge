@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CrossKnowledge - Code challenge</title>
+  </head>
+  <body>
+    <script>
+      // This will create elements for testing, don't change this code
+      (() => {
+        const MS_PER_MINUTE = 60000;
+        const NOW = new Date();
+        let minutes = [0, 1, 30, 60, 6 * 60, 23 * 60, 24 * 60];
+        let dates = [];
+
+        minutes.forEach((i) => dates.push(new Date(NOW - i * MS_PER_MINUTE)));
+
+        dates.forEach((item) => {
+          let el = document.createElement("div");
+          el.innerHTML = "Started ";
+
+          let dt = document.createElement("span");
+          dt.className = "js-date-format";
+          dt.innerHTML = item.toISOString();
+          el.appendChild(dt);
+          document.body.appendChild(el);
+        });
+      })();
+    </script>
+    <script>
+      function format_seconds_from_now(date) {
+        let date_obj = new Date(date);
+        let now = new Date();
+        let seconds = (now - date_obj) / 1000;
+        if (seconds > 24 * 60 * 60) {
+          let days = Number.parseInt(seconds / (24 * 60 * 60));
+          return `${days} ${days > 1 ? "day" : "days"} ago`;
+        } else if (seconds > 60 * 60) {
+          let hours = Number.parseInt(seconds / (60 * 60));
+          return `${hours} ${hours > 1 ? "hour" : "hours"} ago`;
+        } else if (seconds > 60) {
+          let minutes = Number.parseInt(seconds / 60);
+          return `${minutes} ${minutes > 1 ? "minute" : "minutes"} ago`;
+        }
+        return `${Number.parseInt(seconds)} ${
+          seconds > 1 ? "second" : "seconds"
+        } ago`;
+      }
+
+      let format_dates = () => {
+        let dates = document.querySelectorAll(".js-date-format");
+        for (let index = 0; index < dates.length - 1; index++) {
+          const element = dates[index];
+          if (element.dataset.date === undefined) {
+            element.dataset.date = element.innerHTML;
+          }
+          let date = new Date(element.dataset.date);
+          let now = new Date();
+          element.innerHTML = format_seconds_from_now(element.dataset.date);
+        }
+      };
+      format_dates();
+      setInterval(format_dates, 1000);
+    </script>
+  </body>
+</html>
